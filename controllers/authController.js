@@ -95,3 +95,32 @@ export const login = async (req, res) => {
   }
 };
 
+
+// Check User Controller
+export const checkUser = async (req, res) => {
+  try {
+    // Middleware attaches req.user, so we can query DB for user details
+    const userId = req.user.id;
+
+    const [user] = await db.query(
+      "SELECT user_id, username, email FROM users WHERE user_id = ?",
+      [userId]
+    );
+
+    if (user.length === 0) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "User not found" });
+    }
+
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "User authenticated", user: user[0] });
+  } catch (err) {
+    console.error("CheckUser error:", err);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error" });
+  }
+};
+
