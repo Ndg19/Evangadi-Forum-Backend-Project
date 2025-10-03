@@ -46,4 +46,35 @@ export const getSingleQuestion = async (req, res) => {
   }
 };
 
+// ================== CREATE question ==================
+export const createQuestion = async (req, res) => {
+  try {
+    const { title, description, tag } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).json({
+        error: "Bad Request",
+        message: "Please provide all required fields",
+      });
+    }
+
+    const question_id = uuidv4();
+    await db.query(
+      "INSERT INTO questions (question_id, user_id, title, description, tag, created_at, updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
+      [question_id, req.user.id, title, description, tag || null]
+    );
+
+    res.status(201).json({
+      message: "Question created successfully",
+      question_id,
+    });
+  } catch (err) {
+    console.error("Create Question Error:", err);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: "Could not create question",
+    });
+  }
+};
+
 
