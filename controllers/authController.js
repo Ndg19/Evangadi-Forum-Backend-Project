@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import db from "../config/dbConfig.js";
 import { StatusCodes } from "http-status-codes";
+import jwt from "jsonwebtoken";
 
 // Register Controller
 export const register = async (req, res) => {
@@ -45,3 +46,52 @@ export const register = async (req, res) => {
       .json({ message: "Server error" });
   }
 };
+
+
+
+// Login Controller
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const [user] = await db.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+
+    if (!user || user.length === 0) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const existingUser = user[0];
+
+    // Compare hashed password with stored hash
+    const isMatch = await bcrypt.compare(password, existingUser.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Generate JWT token for authenticated user
+    const token = jwt.sign(
+      { id: existingUser.user_id, email: existingUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: existingUser.user_id,
+        username: existingUser.username,
+        email: existingUser.email,
+      },
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
