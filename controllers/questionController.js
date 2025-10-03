@@ -20,3 +20,30 @@ export const getAllQuestions = async (req, res) => {
   }
 };
 
+// ================== GET single question ==================
+export const getSingleQuestion = async (req, res) => {
+  const { question_id } = req.params;
+  try {
+    const [rows] = await db.query(
+      "SELECT * FROM questions WHERE question_id = ?",
+      [question_id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        error: "Not Found",
+        message: "The requested question could not be found.",
+      });
+    }
+
+    res.json({ question: rows[0] });
+  } catch (err) {
+    console.error("Get Single Question Error:", err);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: "An unexpected error occurred.",
+    });
+  }
+};
+
+
