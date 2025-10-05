@@ -1,11 +1,15 @@
-const mysql = require("mysql2");
-require("dotenv").config();
+import mysql from "mysql2";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const dbConnection = mysql.createPool({
-  user: process.env.USER,
-  database: process.env.DATABASE,
-  host: process.env.HOST,
-  password: process.env.PASSWORD,
+  user: process.env.DB_USER,
+  database: process.env.DB_DATABASE,
+  host: process.env.DB_HOST,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
   connectionLimit: 10
 });
 
-module.exports = dbConnection.promise();
+export default dbConnection.promise();
