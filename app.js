@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import db from "./config/dbConfig.js";
+import db from "./config/dbConfig.js"; 
 import authRoutes from "./routes/authRoutes.js";
 import questionRoutes from "./routes/questionRoutes.js";
 import answerRoutes from "./routes/answerRoutes.js";
@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware ISAAC
+// Middleware
 app.use(express.json()); // Parse JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
@@ -32,17 +32,17 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
     process.exit(1); // fail fast if DB is down
   }
 })();
-// Routes ISAAC
+// Routes
 app.use("/api/user", authRoutes); // Authentication routes (login, signup, checkUser)
-app.use("/api/question", authenticate, questionRoutes); // Question routes
-app.use("/api/answer", authenticate, answerRoutes); // Answer routes
+app.use("/api/question",authenticate , questionRoutes); // Question routes
+app.use("/api/answer",authenticate , answerRoutes); // Answer routes
 
-// Base route ISAAC 
+// Base route
 app.get("/", (req, res) => {
   res.send("Evangadi Forum API is running...");
 });
 
-// Global error handler ISAAC
+// Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
