@@ -19,7 +19,10 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 // CORS: allow frontend from env variable + local dev
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://your-frontend-domain.com"],
+    origin: [
+      "http://localhost:5173",
+      "https://grouponeevangadiforumproject.netlify.app",
+    ],
   })
 );
 
