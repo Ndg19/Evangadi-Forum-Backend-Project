@@ -47,6 +47,8 @@ app.use(
 app.use("/api/user", authRoutes); // Authentication routes (login, signup, checkUser)
 app.use("/api/question", authenticate, questionRoutes); // Question routes
 app.use("/api/answer", authenticate, answerRoutes); // Answer routes
+// app.use("/api/question", authenticate, questionRoutes);
+
 
 // Base route
 app.get("/", (req, res) => {
@@ -57,7 +59,7 @@ app.get("/", (req, res) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
-    error: err.name || "InternalServerError",
+    error: err.name || "Internal Server Error",
     message: err.message || "An unexpected error occurred.",
   });
 });
